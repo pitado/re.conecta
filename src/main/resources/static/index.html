@@ -13,6 +13,7 @@
       --accent: #6ee7ff;
       --accent-2: #7c5cff;
       --ok: #31d0aa;
+      --error: #ff4b4b;
       --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
     }
     * { box-sizing: border-box; }
@@ -66,6 +67,7 @@
     .tile h3 { margin: 0 0 6px; font-size: 16px }
     .muted { color: var(--muted); font-size: 13px; line-height: 1.35 }
     .ok { color: var(--ok); font-weight: 600 }
+    .error { color: var(--error); font-weight: 600 }
     .footer {
       margin-top: 18px; font-size: 12px; color: var(--muted); text-align: center;
     }
@@ -80,23 +82,23 @@
       <span class="pill">Java 17</span>
     </div>
 
-    <h1>Seu backend está online </h1>
+    <h1>Seu backend está online 🚀</h1>
     <p>Bem-vindo! Esta é a página inicial da <strong>Re.Conecta API</strong>.
       Use os atalhos abaixo para inspecionar, monitorar e testar os endpoints.</p>
 
     <div class="grid">
-      <a class="tile" href="/swagger-ui.html" target="_self" rel="noopener">
-        <h3> Swagger UI</h3>
+      <a class="tile" href="/swagger-ui/index.html" target="_self" rel="noopener">
+        <h3>Swagger UI</h3>
         <div class="muted">Explore e teste os endpoints diretamente no navegador.</div>
       </a>
 
       <a class="tile" href="/healthz" target="_self" rel="noopener">
-        <h3> Healthcheck</h3>
-        <div class="muted">Verifica rapidamente se a API está <span class="ok">UP</span>.</div>
+        <h3>Healthcheck</h3>
+        <div class="muted">Verifica rapidamente se a API está <span id="status" class="ok">checando...</span></div>
       </a>
 
       <a class="tile" href="/actuator" target="_self" rel="noopener">
-        <h3> Actuator (opcional)</h3>
+        <h3>Actuator (opcional)</h3>
         <div class="muted">Métricas e infos (se o Actuator estiver habilitado).</div>
       </a>
     </div>
@@ -105,5 +107,21 @@
       Dica: endpoints comuns — <code>/api/v1/…</code> • <code>/auth/login</code> • <code>/clientes</code>
     </div>
   </main>
+
+  <script>
+    // Testa o healthz automaticamente
+    fetch("/healthz")
+      .then(res => {
+        const status = document.getElementById("status");
+        if (res.ok) status.textContent = "ONLINE ✅";
+        else status.textContent = "OFFLINE ❌";
+      })
+      .catch(() => {
+        const status = document.getElementById("status");
+        status.textContent = "OFFLINE ❌";
+        status.classList.remove("ok");
+        status.classList.add("error");
+      });
+  </script>
 </body>
 </html>
