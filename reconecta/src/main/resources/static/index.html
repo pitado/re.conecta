@@ -6,71 +6,104 @@
   <title>Re.Conecta API</title>
   <style>
     :root {
-      --bg: #0b0f14; --card: #121823; --text: #e6edf3; --muted: #9fb3c8;
-      --accent: #6ee7ff; --accent2: #7c5cff; --ok: #31d0aa; --err:#ff4b4b;
+      --bg: #0b0f14;
+      --card: #121823;
+      --text: #e6edf3;
+      --muted: #9fb3c8;
+      --accent: #6ee7ff;
+      --accent2: #7c5cff;
+      --ok: #31d0aa;
+      --err: #ff4b4b;
       --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
       --border: rgba(255,255,255,.08);
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
       color: var(--text);
       background:
         radial-gradient(1200px 600px at 10% -20%, rgba(124,92,255,.25), transparent 40%),
         radial-gradient(900px 500px at 110% 10%, rgba(110,231,255,.20), transparent 45%),
         var(--bg);
-      min-height: 100vh; display: grid; place-items: start center; padding: 32px 16px;
+      min-height: 100vh;
+      display: grid;
+      place-items: start center;
+      padding: 32px 16px;
     }
     .shell { width: 100%; max-width: 1080px; }
     .card {
-      width: 100%; background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)), var(--card);
-      border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px;
+      width: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)), var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
     }
-    .pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 12px; }
-    .pill { padding:6px 10px; border:1px solid var(--border); color:var(--muted); border-radius:999px; font-size:12px; background:rgba(255,255,255,.02) }
-    h1 { margin:6px 0 8px; font-size:28px; letter-spacing:.2px;
+    .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .pill {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(255,255,255,.02);
+    }
+    h1 {
+      margin: 6px 0 8px;
+      font-size: 28px;
+      letter-spacing: .2px;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip:text; background-clip:text; color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    p { color: var(--muted); margin: 6px 0 18px }
-    .grid { display:grid; gap:12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    @media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
-    .tile { border:1px solid var(--border); background: rgba(255,255,255,.02); padding:16px;
-      border-radius:14px; text-decoration:none; color: var(--text); display:block; transition:.2s ease transform, .2s ease background;
+    p { color: var(--muted); margin: 6px 0 18px; }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .tile {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      padding: 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      transition: .2s ease transform, .2s ease background;
     }
-    .tile:hover { transform: translateY(-2px); background: rgba(110,231,255,.05); border-color: rgba(110,231,255,.4);}
-    .tile h3 { margin:0 0 6px; font-size:16px }
-    .muted { color: var(--muted); font-size:13px; line-height:1.35 }
-
-    .row { display:grid; gap:16px; grid-template-columns: 1.2fr 1fr; }
-    @media (max-width: 900px){ .row{ grid-template-columns:1fr; } }
-
+    .tile:hover {
+      transform: translateY(-2px);
+      background: rgba(110,231,255,.05);
+      border-color: rgba(110,231,255,.4);
+    }
+    .tile h3 { margin: 0 0 6px; font-size: 16px; }
+    .muted { color: var(--muted); font-size: 13px; line-height: 1.35; }
     .btn {
-      appearance:none; border:1px solid var(--border); background:rgba(255,255,255,.03);
-      color:var(--text); padding:10px 14px; border-radius:10px; cursor:pointer;
+      appearance: none;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
     }
-    .btn:hover { background: rgba(110,231,255,.07); border-color: rgba(110,231,255,.4); }
-    .btn-primary { border-color: rgba(110,231,255,.5); background: linear-gradient(180deg, rgba(110,231,255,.15), rgba(110,231,255,.08)); }
-    .ok { color: var(--ok); font-weight: 600 }
-    .bad { color: var(--err); font-weight: 600 }
-    .field { display:flex; gap:10px; align-items:center; }
-    .field label { width:120px; color: var(--muted); font-size: 14px; }
-    input, select, textarea {
-      width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background: rgba(255,255,255,.02); color: var(--text);
-      outline:none;
+    .btn:hover {
+      background: rgba(110,231,255,.07);
+      border-color: rgba(110,231,255,.4);
     }
-    textarea { min-height:100px; resize: vertical; }
-    pre {
-      margin:0; padding:12px; background: rgba(255,255,255,.02); border:1px solid var(--border); border-radius:12px;
-      overflow:auto; max-height: 400px; white-space: pre-wrap; word-break: break-word;
+    .btn-primary {
+      border-color: rgba(110,231,255,.5);
+      background: linear-gradient(180deg, rgba(110,231,255,.15), rgba(110,231,255,.08));
     }
-    .footer { font-size:12px; color: var(--muted); margin-top: 10px; text-align: center; }
+    .ok { color: var(--ok); font-weight: 600; }
+    .bad { color: var(--err); font-weight: 600; }
+    .footer { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   </style>
 </head>
 <body>
   <div class="shell">
-    <!-- Header / Atalhos -->
     <section class="card">
       <div class="pills">
         <span class="pill">Re.Conecta · API</span>
@@ -78,172 +111,73 @@
         <span class="pill">Java 17</span>
       </div>
       <h1>Seu backend está online 🚀</h1>
-      <p>Bem-vindo! Esta é a página inicial da <strong>Re.Conecta API</strong>. Use os atalhos abaixo para inspecionar, monitorar
-        e testar os endpoints. <span id="status" class="ok">Verificando...</span></p>
+      <p>
+        Bem-vindo! Esta é a página inicial da <strong>Re.Conecta API</strong>.
+        Use os atalhos abaixo para inspecionar, monitorar e testar os endpoints.
+        <span id="status" data-health-chip class="ok">Verificando...</span>
+      </p>
 
       <div class="grid" style="margin-top:12px">
-        <a class="tile" href="/swagger-ui/index.html" target="_self" rel="noopener">
-          <h3>Swagger UI</h3>
-          <div class="muted">Explore e teste os endpoints diretamente no navegador.</div>
-        </a>
-        <a class="tile" id="healthLink" href="#" onclick="return false;">
-          <h3>Healthcheck</h3>
-          <div class="muted">Verifica rapidamente se a API está <span id="health">…</span>.</div>
-        </a>
-        <a class="tile" href="/actuator" target="_self" rel="noopener">
-          <h3>Actuator (opcional)</h3>
-          <div class="muted">Métricas e infos (se o Actuator estiver habilitado).</div>
-        </a>
+        <a class="tile" href="/swagger-ui/index.html"><h3>Swagger UI</h3>
+          <div class="muted">Explore e teste os endpoints diretamente no navegador.</div></a>
+        <a class="tile" id="healthLink" href="#"><h3>Healthcheck</h3>
+          <div class="muted">Verifica rapidamente se a API está <span id="health">...</span>.</div></a>
+        <a class="tile" href="/actuator"><h3>Actuator (opcional)</h3>
+          <div class="muted">Métricas e infos (se o Actuator estiver habilitado).</div></a>
       </div>
 
       <div class="footer">
-        Dica: endpoints comuns — <code class="mono">/api/v1/…</code> • <code class="mono">/auth/login</code> • <code class="mono">/clientes</code>
+        Dica: endpoints comuns — <code class="mono">/api/v1/…</code> •
+        <code class="mono">/auth/login</code> •
+        <code class="mono">/clientes</code>
       </div>
     </section>
 
-    <!-- Testers -->
-    <section class="row">
-      <!-- API Tester Genérico -->
-      <div class="card">
-        <h3 style="margin-top:0">Tester de API (genérico)</h3>
-        <div class="field" style="margin-top:10px">
-          <label for="method">Método</label>
-          <select id="method">
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
-            <option>PATCH</option>
-            <option>DELETE</option>
-          </select>
-        </div>
-        <div class="field" style="margin-top:10px">
-          <label for="url">Endpoint</label>
-          <input id="url" placeholder="/api/v1/clientes" />
-        </div>
-        <div class="field" style="margin-top:10px">
-          <label for="headers">Headers (JSON)</label>
-          <textarea id="headers" placeholder='{"Content-Type":"application/json"}'></textarea>
-        </div>
-        <div class="field" style="margin-top:10px">
-          <label for="body">Body (JSON)</label>
-          <textarea id="body" placeholder='{"nome":"Maria", "email":"maria@exemplo.com"}'></textarea>
-        </div>
-        <div style="display:flex; gap:8px; margin-top:12px">
-          <button class="btn btn-primary" onclick="send()">Enviar</button>
-          <button class="btn" onclick="clearOut()">Limpar Saída</button>
-        </div>
-        <div style="margin-top:12px">
-          <div class="muted mono" id="statusLine"></div>
-          <pre id="out"></pre>
-        </div>
-      </div>
-
-      <!-- Formulário simples: Criar Cliente -->
-      <div class="card">
-        <h3 style="margin-top:0">Criar Cliente (exemplo)</h3>
-        <p class="muted">Envia um <code class="mono">POST</code> para <code class="mono" id="clientesEndpoint">/api/v1/clientes</code>.</p>
-        <div class="field"><label>Nome</label><input id="cNome" placeholder="Fulano da Silva" /></div>
-        <div class="field" style="margin-top:10px"><label>E-mail</label><input id="cEmail" type="email" placeholder="fulano@email.com" /></div>
-        <div style="display:flex; gap:8px; margin-top:12px">
-          <button class="btn btn-primary" onclick="criarCliente()">Criar</button>
-          <button class="btn" onclick="listarClientes()">Listar</button>
-        </div>
-        <div style="margin-top:12px">
-          <pre id="clientesOut"></pre>
-        </div>
-      </div>
-    </section>
-
-    <p class="footer">© Re.Conecta — página estática servida pelo Spring em <code class="mono">/</code>.</p>
+    <p class="footer">© Re.Conecta — página estática servida pelo Spring.</p>
   </div>
 
   <script>
-    // Detecta base url automaticamente (útil caso mude o domínio)
-    const BASE = location.origin;
-
-    // HEALTCHECK
-    async function checkHealth() {
+    // Testa /healthz e /actuator/health
+    (async () => {
+      const base = window.location.origin;
+      const chip = document.querySelector('[data-health-chip]');
       const el = document.getElementById('health');
-      const st = document.getElementById('status');
-      try {
-        const r = await fetch(`${BASE}/healthz`, {cache:'no-store'});
-        if (r.ok) {
-          el.textContent = 'ONLINE ✅';
-          el.className = 'ok';
-          st.textContent = 'API ONLINE';
-          st.className = 'ok';
-        } else {
-          el.textContent = 'OFFLINE ❌';
-          el.className = 'bad';
-          st.textContent = 'API OFFLINE';
-          st.className = 'bad';
-        }
-      } catch(e) {
+
+      async function ok(url) {
+        try {
+          const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+          if (!r.ok) return false;
+          const ct = (r.headers.get('content-type') || '').toLowerCase();
+          if (ct.includes('application/json')) {
+            const data = await r.json();
+            if (data?.status === 'UP' || data?.status === 'ok' || data?.status === 'OK') return true;
+            if (data?.status?.status === 'UP') return true;
+          }
+          return r.ok;
+        } catch { return false; }
+      }
+
+      const healthz = `${base}/healthz`;
+      const actuator = `${base}/actuator/health`;
+      const isUp = await ok(healthz) || await ok(actuator);
+
+      if (isUp) {
+        el.textContent = 'ONLINE ✅';
+        el.className = 'ok';
+        chip.textContent = 'API ONLINE';
+        chip.className = 'ok';
+      } else {
         el.textContent = 'OFFLINE ❌';
         el.className = 'bad';
-        st.textContent = 'API OFFLINE';
-        st.className = 'bad';
+        chip.textContent = 'API OFFLINE';
+        chip.className = 'bad';
       }
-    }
-    document.getElementById('healthLink').addEventListener('click', (e)=>{ e.preventDefault(); checkHealth(); });
-    checkHealth();
 
-    // TESTER GENÉRICO
-    function clearOut(){ document.getElementById('out').textContent=''; document.getElementById('statusLine').textContent=''; }
-    async function send(){
-      const method = document.getElementById('method').value.trim();
-      const url = document.getElementById('url').value.trim() || '/';
-      const headersRaw = document.getElementById('headers').value.trim();
-      const bodyRaw = document.getElementById('body').value.trim();
-      let headers = {};
-      try{ if(headersRaw) headers = JSON.parse(headersRaw); }catch{ alert('Headers inválidos (JSON)'); return; }
-      let body = undefined;
-      if (['POST','PUT','PATCH'].includes(method) && bodyRaw){
-        try{ body = JSON.stringify(JSON.parse(bodyRaw)); }
-        catch{ alert('Body inválido (JSON)'); return; }
-        if (!headers['Content-Type']) headers['Content-Type'] = 'application/json';
-      }
-      const full = url.startsWith('http') ? url : `${BASE}${url.startsWith('/')?url:'/'.concat(url)}`;
-      const t0 = performance.now();
-      let resp, data, text;
-      try{
-        resp = await fetch(full, { method, headers, body });
-        const ct = resp.headers.get('content-type') || '';
-        text = await resp.text();
-        data = ct.includes('application/json') ? JSON.stringify(JSON.parse(text), null, 2) : text;
-      }catch(err){
-        data = String(err);
-      }
-      const ms = Math.round(performance.now() - t0);
-      document.getElementById('statusLine').textContent = `→ ${method} ${full}  |  ${resp?resp.status:0} ${resp?resp.statusText:'(erro)'}  • ${ms} ms`;
-      document.getElementById('out').textContent = data ?? '';
-    }
-
-    // Cliente (exemplo)
-    const CLIENTES_EP = '/api/v1/clientes';
-    document.getElementById('clientesEndpoint').textContent = CLIENTES_EP;
-
-    async function criarCliente(){
-      const nome = document.getElementById('cNome').value.trim();
-      const email = document.getElementById('cEmail').value.trim();
-      if(!nome || !email){ alert('Preencha nome e e-mail'); return; }
-      const r = await fetch(`${BASE}${CLIENTES_EP}`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ nome, email })
+      document.getElementById('healthLink').addEventListener('click', e => {
+        e.preventDefault();
+        location.reload();
       });
-      const txt = await r.text();
-      let out = txt;
-      try{ out = JSON.stringify(JSON.parse(txt), null, 2); }catch{}
-      document.getElementById('clientesOut').textContent = out;
-    }
-    async function listarClientes(){
-      const r = await fetch(`${BASE}${CLIENTES_EP}`);
-      const txt = await r.text();
-      let out = txt;
-      try{ out = JSON.stringify(JSON.parse(txt), null, 2); }catch{}
-      document.getElementById('clientesOut').textContent = out;
-    }
+    })();
   </script>
 </body>
 </html>
