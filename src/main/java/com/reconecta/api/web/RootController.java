@@ -1,4 +1,3 @@
-// src/main/java/com/reconecta/api/web/HomeController.java
 package com.reconecta.api.web;
 
 import org.springframework.stereotype.Controller;
@@ -7,18 +6,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class HomeController {
-  @GetMapping("/")
-  public String home() {
-    // redireciona para o Swagger UI
-    return "redirect:/swagger-ui/index.html";
-  }
+
+    // Abre a documentação assim que acessa a raiz "/"
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/swagger-ui/index.html";
+    }
 }
 
-// opcional: ping simples em JSON
+// endpoint simples para checagem de saúde
 @RestController
 class HealthController {
-  @GetMapping("/healthz")
-  public String health() {
-    return "{\"status\":\"ok\"}";
-  }
+
+    @GetMapping("/healthz")
+    public String health() {
+        return "{\"status\":\"ok\"}";
+    }
 }
