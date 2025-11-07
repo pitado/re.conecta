@@ -17,12 +17,11 @@ public class HealthController {
 
     @GetMapping("/healthz")
     public HealthResponse healthz() {
-        // tenta abrir conexão no banco (valida DB também)
-        try (Connection ignored = dataSource.getConnection()) {
-            return new HealthResponse("UP");
-        } catch (Exception e) {
-            return new HealthResponse("DOWN");
-        }
+      try (Connection ignored = dataSource.getConnection()) {
+        return new HealthResponse("UP");
+      } catch (Exception e) {
+        return new HealthResponse("DOWN");
+      }
     }
 
     static record HealthResponse(String status) {}
