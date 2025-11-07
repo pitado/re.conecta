@@ -24,6 +24,7 @@ server:
   # Para o X-Forwarded-* do Render funcionar corretamente
   forward-headers-strategy: framework
 
+# Swagger / OpenAPI
 springdoc:
   swagger-ui:
     # caminho da UI
@@ -31,3 +32,15 @@ springdoc:
   api-docs:
     # JSON da spec
     path: /v3/api-docs
+
+# Actuator (opcional)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
