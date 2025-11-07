@@ -13,7 +13,7 @@
       --accent: #6ee7ff;
       --accent-2: #7c5cff;
       --ok: #31d0aa;
-      --err: #ff4b4b;
+      --bad: #ff5d73;
       --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
     }
     * { box-sizing: border-box; }
@@ -33,45 +33,30 @@
     .card {
       width: 100%;
       max-width: 920px;
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)) , var(--card);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)), var(--card);
       border: 1px solid rgba(255,255,255,.06);
       border-radius: 20px;
       padding: 28px;
       box-shadow: var(--shadow);
     }
-    .top {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap;
-    }
-    .pill {
-      padding: 6px 12px; border-radius: 999px; font-size: 12px; color: var(--muted);
-      border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.02)
-    }
-    h1 {
-      margin: 0 0 8px; font-size: 30px; letter-spacing: .4px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
+    .top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+    .pill { padding: 6px 12px; border-radius: 999px; font-size: 12px; color: var(--muted);
+            border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.02) }
+    h1 { margin: 0; font-size: 28px; letter-spacing: .4px;
+         background: linear-gradient(90deg, var(--accent), var(--accent-2));
+         -webkit-background-clip: text; background-clip: text; color: transparent; }
     p { color: var(--muted); margin: 8px 0 18px }
-    .grid {
-      display: grid; gap: 12px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
-    .tile {
-      border: 1px solid rgba(255,255,255,.07);
-      background: rgba(255,255,255,.02);
-      padding: 16px; border-radius: 14px; text-decoration: none; color: var(--text);
-      transition: transform .2s ease, border-color .2s ease, background .2s ease;
-      display: block;
-    }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .tile { border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02);
+            padding: 16px; border-radius: 14px; text-decoration: none; color: var(--text);
+            transition: transform .2s ease, border-color .2s ease, background .2s ease; display: block; }
     .tile:hover { transform: translateY(-2px); border-color: rgba(110,231,255,.5); background: rgba(110,231,255,.05) }
     .tile h3 { margin: 0 0 6px; font-size: 16px }
     .muted { color: var(--muted); font-size: 13px; line-height: 1.35 }
     .ok { color: var(--ok); font-weight: 700 }
-    .bad { color: var(--err); font-weight: 700 }
-    .footer {
-      margin-top: 18px; font-size: 12px; color: var(--muted); text-align: center;
-    }
+    .bad { color: var(--bad); font-weight: 700 }
+    .footer { margin-top: 18px; font-size: 12px; color: var(--muted); text-align: center; }
     code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   </style>
 </head>
@@ -88,12 +73,12 @@
       Use os atalhos abaixo para inspecionar, monitorar e testar os endpoints.</p>
 
     <div class="grid">
-      <a class="tile" href="/swagger-ui/index.html" target="_self" rel="noopener">
+      <a class="tile" href="/swagger-ui.html" target="_self" rel="noopener">
         <h3>Swagger UI</h3>
         <div class="muted">Explore e teste os endpoints diretamente no navegador.</div>
       </a>
 
-      <a class="tile" href="/healthz" target="_self" rel="noopener">
+      <a class="tile" href="#" onclick="event.preventDefault(); checkHealth(true);">
         <h3>Healthcheck</h3>
         <div class="muted" id="healthText">Verifica rapidamente se a API está <span class="bad">OFFLINE</span> ❌</div>
       </a>
@@ -110,20 +95,23 @@
   </main>
 
   <script>
-    // Atualiza o badge com base em /healthz
-    (async function () {
+    async function checkHealth(showAlert) {
       const el = document.getElementById('healthText');
       try {
-        const r = await fetch('/healthz', { cache: 'no-store' });
+        const r = await fetch('/actuator/health', { cache: 'no-store' });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const data = await r.json();
         const up = (data && (data.status || '').toUpperCase() === 'UP');
         el.innerHTML = 'Verifica rapidamente se a API está ' +
           (up ? '<span class="ok">ONLINE</span> ✅' : '<span class="bad">OFFLINE</span> ❌');
-      } catch {
+        if (showAlert) alert(up ? 'API ONLINE' : 'API OFFLINE');
+      } catch (e) {
         el.innerHTML = 'Verifica rapidamente se a API está <span class="bad">OFFLINE</span> ❌';
+        if (showAlert) alert('Falha ao consultar /actuator/health');
       }
-    })();
+    }
+    // roda automaticamente ao abrir
+    checkHealth(false);
   </script>
 </body>
 </html>
