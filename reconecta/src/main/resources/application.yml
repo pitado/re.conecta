@@ -1,11 +1,13 @@
 spring:
   application:
     name: reconecta
+
   datasource:
-    url: jdbc:postgresql://ep-fancy-cake-a48tdu6h-pooler.us-east-1.aws.neon.tech:5432/neondb?sslmode=require&channel_binding=require
-    username: neondb_owner
-    password: npg_idZSE7nqWLK8
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,6 +15,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 server:
-  port: 8080
+  port: ${PORT:8080}
