@@ -3,10 +3,9 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Re.Conecta · Doadores</title>
+  <title>Re.Conecta · Doações</title>
   <style>
-    :root{--bg:#0b0f14;--card:#121823;--text:#e6edf3;--muted:#9fb3c8;--border:rgba(255,255,255,.08);
-      --soft:rgba(255,255,255,.03);}
+    :root{--bg:#0b0f14;--card:#121823;--text:#e6edf3;--muted:#9fb3c8;--border:rgba(255,255,255,.08);--soft:rgba(255,255,255,.03)}
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;color:var(--text);
       background:radial-gradient(1100px 600px at -10% -20%, rgba(139,92,246,.18), transparent 40%),
@@ -33,8 +32,8 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Doadores · Re.Conecta</h1>
-      <p class="muted">Gerencie doadores. <a href="/">← Voltar à Home</a></p>
+      <h1>Doações · Re.Conecta</h1>
+      <p class="muted">Registre as doações (ligando doador ➜ beneficiário). <a href="/">← Voltar à Home</a></p>
 
       <div class="grid">
         <!-- Tester genérico -->
@@ -47,13 +46,18 @@
           </select>
 
           <label>Endpoint</label>
-          <input id="u" value="/api/v1/doadores"/>
+          <input id="u" value="/api/v1/doacoes"/>
 
           <label>Headers (JSON)</label>
           <textarea id="h" rows="4">{ "Content-Type": "application/json" }</textarea>
 
           <label>Body (JSON)</label>
-          <textarea id="b" rows="4">{ "nome": "ONG Luz", "email": "contato@ongluz.org", "telefone": "(11) 99999-8888", "tipo": "PJ", "cpfCnpj": "12.345.678/0001-00" }</textarea>
+          <textarea id="b" rows="6">{
+  "doadorId": 1,
+  "beneficiarioId": 1,
+  "valor": 150.00,
+  "descricao": "Cestas básicas"
+}</textarea>
 
           <div style="margin-top:10px;display:flex;gap:8px;">
             <button class="primary" id="sendBtn">Enviar</button>
@@ -66,24 +70,18 @@
 
         <!-- Criar / Listar rápido -->
         <div class="tile">
-          <h3>Criar Doador (exemplo)</h3>
-          <label>Nome</label>
-          <input id="nome" placeholder="Fulano / ONG"/>
+          <h3>Registrar Doação (exemplo)</h3>
+          <label>ID do Doador</label>
+          <input id="doadorId" type="number" placeholder="1"/>
 
-          <label>E-mail</label>
-          <input id="email" placeholder="email@exemplo.com"/>
+          <label>ID do Beneficiário</label>
+          <input id="benefId" type="number" placeholder="1"/>
 
-          <label>Telefone</label>
-          <input id="telefone" placeholder="(xx) xxxxx-xxxx"/>
+          <label>Valor</label>
+          <input id="valor" type="number" step="0.01" placeholder="0.00"/>
 
-          <label>Tipo</label>
-          <select id="tipo">
-            <option>PF</option>
-            <option selected>PJ</option>
-          </select>
-
-          <label>CPF/CNPJ (opcional)</label>
-          <input id="cpfcnpj" placeholder="xxx.xxx.xxx-xx / xx.xxx.xxx/0001-xx"/>
+          <label>Descrição (opcional)</label>
+          <input id="desc" placeholder="Observações"/>
 
           <div style="margin-top:10px;display:flex;gap:8px;">
             <button class="primary" id="btnCriar">Criar</button>
@@ -93,7 +91,7 @@
           <pre id="miniout" style="margin-top:10px"></pre>
 
           <h3 style="margin-top:14px">Lista</h3>
-          <table id="tbl"><thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Tipo</th></tr></thead><tbody></tbody></table>
+          <table id="tbl"><thead><tr><th>ID</th><th>Doador</th><th>Beneficiário</th><th>Valor</th><th>Descrição</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
     </div>
@@ -121,17 +119,16 @@
 
     async function criar(){
       const payload = {
-        nome: $('#nome').value.trim(),
-        email: $('#email').value.trim(),
-        telefone: $('#telefone').value.trim(),
-        tipo: $('#tipo').value,
-        cpfCnpj: $('#cpfcnpj').value.trim() || null
+        doadorId: Number($('#doadorId').value),
+        beneficiarioId: Number($('#benefId').value),
+        valor: Number($('#valor').value),
+        descricao: $('#desc').value.trim() || null
       };
-      if(!payload.nome || !payload.email){
-        log(miniout, { erro: 'Informe nome e e-mail.' }); return;
+      if(!payload.doadorId || !payload.beneficiarioId || !payload.valor){
+        log(miniout, { erro: 'Preencha doadorId, beneficiarioId e valor.' }); return;
       }
       try{
-        const res = await fetch('/api/v1/doadores', {
+        const res = await fetch('/api/v1/doacoes', {
           method: 'POST', headers: { 'Content-Type':'application/json' },
           body: JSON.stringify(payload)
         });
@@ -141,12 +138,12 @@
 
     async function listar(){
       try{
-        const res = await fetch('/api/v1/doadores');
+        const res = await fetch('/api/v1/doacoes');
         const data = await res.json();
         tbody.innerHTML = '';
         (Array.isArray(data) ? data : []).forEach(d=>{
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${d.id ?? ''}</td><td>${d.nome ?? ''}</td><td>${d.email ?? ''}</td><td>${d.telefone ?? ''}</td><td>${d.tipo ?? ''}</td>`;
+          tr.innerHTML = `<td>${d.id ?? ''}</td><td>${d.doadorId ?? d.doador?.id ?? ''}</td><td>${d.beneficiarioId ?? d.beneficiario?.id ?? ''}</td><td>${d.valor ?? ''}</td><td>${d.descricao ?? ''}</td>`;
           tbody.appendChild(tr);
         });
       }catch(e){ log(miniout, { erro: e.message }); }
