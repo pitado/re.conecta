@@ -107,7 +107,8 @@
   </div>
 
   <script>
-    const healthUrl = '/healthz';      // seu endpoint de saúde
+    // Corrigido: endpoint certo do Actuator
+    const healthUrl = '/actuator/health';
     const apiStatus = document.getElementById('apiStatus');
     const healthBadge = document.getElementById('healthBadge');
     const healthLink = document.getElementById('healthLink');
