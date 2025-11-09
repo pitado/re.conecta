@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beneficiários - Re.Conecta</title>
+</head>
+<body>
+  <h1>Cadastro de Beneficiários</h1>
+  <form id="formBenef">
+    <input type="text" id="nome" placeholder="Nome" required />
+    <input type="text" id="instituicao" placeholder="Instituição" />
+    <button type="submit">Cadastrar</button>
+  </form>
+  <div id="listaBenef"></div>
+
+  <script>
+    const URL_BENEF = '/api/v1/beneficiarios';
+    const formB = document.getElementById('formBenef');
+    const listaB = document.getElementById('listaBenef');
+
+    async function carregar() {
+      const res = await fetch(URL_BENEF);
+      const data = await res.json();
+      listaB.innerHTML = data.map(b => `<p>${b.nome} (${b.instituicao || '—'})</p>`).join('');
+    }
+
+    formB.addEventListener('submit', async e => {
+      e.preventDefault();
+      await fetch(URL_BENEF, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          nome: formB.nome.value,
+          instituicao: formB.instituicao.value
+        })
+      });
+      formB.reset();
+      carregar();
+    });
+
+    carregar();
+  </script>
+</body>
+</html>
