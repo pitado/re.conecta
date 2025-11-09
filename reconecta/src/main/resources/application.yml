@@ -15,19 +15,24 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    # Pode manter. O Hibernate detecta sozinho, mas não atrapalha.
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 server:
+  # Render injeta a variável PORT. Deixamos 10000 como fallback.
   port: ${PORT:10000}
+  # Para o X-Forwarded-* do Render funcionar corretamente
   forward-headers-strategy: framework
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    # caminho da UI
+    path: /swagger-ui/index.html
   api-docs:
+    # JSON da spec
     path: /v3/api-docs
 
-# >>> Actuator visível (health e info) <<<
+# (Opcional, mas recomendado) expõe health e info no Actuator
 management:
   endpoints:
     web:
