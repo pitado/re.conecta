@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clientes - Re.Conecta</title>
+</head>
+<body>
+  <h1>Gerenciamento de Clientes</h1>
+  <form id="clienteForm">
+    <input type="text" id="nome" placeholder="Nome" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <button type="submit">Cadastrar</button>
+  </form>
+  <div id="listaClientes"></div>
+
+  <script>
+    const API_URL = '/api/v1/clientes';
+    const form = document.getElementById('clienteForm');
+    const lista = document.getElementById('listaClientes');
+
+    async function carregar() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      lista.innerHTML = data.map(c => `<p>${c.nome} — ${c.email}</p>`).join('');
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          nome: form.nome.value,
+          email: form.email.value
+        })
+      });
+      form.reset();
+      carregar();
+    });
+
+    carregar();
+  </script>
+</body>
+</html>
