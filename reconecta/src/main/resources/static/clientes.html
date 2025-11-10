@@ -1,133 +1,158 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerenciamento de Clientes - Re.Conecta</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Re.Conecta · Clientes</title>
   <style>
-    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#0b0f14;color:#e6edf3;min-height:100vh;padding:30px}
-    .container{max-width:860px;margin:0 auto;background:#121823;border-radius:14px;padding:26px;box-shadow:0 10px 25px rgba(0,0,0,.35)}
-    h1{margin:0 0 18px;text-align:center;font-size:32px;color:#22d3ee}
-    form{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-    input{flex:1;min-width:200px;padding:11px 14px;border:1px solid rgba(255,255,255,.10);border-radius:10px;background:rgba(255,255,255,.05);color:#e6edf3}
-    button{padding:11px 18px;background:#22d3ee;color:#000;border:none;border-radius:10px;font-weight:700;cursor:pointer;transition:.2s}
-    button:hover{background:#8b5cf6;color:#fff}
-    .meta{display:flex;gap:10px;align-items:center;margin-bottom:8px;color:#9fb3c8;font-size:13px}
-    .pill{border:1px solid rgba(255,255,255,.08);padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.03)}
-    .ok{color:#34d399}.err{color:#ef4444}
-    table{width:100%;border-collapse:collapse;margin-top:8px}
-    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.10);text-align:left}
-    th{color:#22d3ee}
-    .msg{margin-top:8px;font-size:14px}
-    a{color:#22d3ee;text-decoration:none}
+    :root{
+      --bg:#0b1117;--card:#0f1722;--muted:#9fb3c8;--text:#e6edf3;
+      --primary:#22d3ee;--ok:#10b981;--err:#ef4444;--border:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+    .wrap{max-width:860px;margin:32px auto;padding:0 16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px}
+    h1{margin:0 0 18px;font-size:28px;color:var(--primary)}
+    .badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted);margin-right:8px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    input{flex:1;min-width:220px;background:#0b1220;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:12px}
+    button{background:var(--primary);border:0;border-radius:10px;color:#05202a;padding:12px 16px;font-weight:700;cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-top:1px solid var(--border);padding:12px 8px;text-align:left;color:var(--text)}
+    .muted{color:var(--muted)}
+    .status{margin:8px 0 0}
+    .ok{color:var(--ok);font-weight:700}
+    .err{color:var(--err);font-weight:700}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid var(--border);margin-left:8px}
+    .pill.ok{background:rgba(16,185,129,.15);color:var(--ok);border-color:rgba(16,185,129,.45)}
+    .pill.err{background:rgba(239,68,68,.15);color:var(--err);border-color:rgba(239,68,68,.45)}
+    small{color:var(--muted)}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="meta">
-      <span class="pill">Re.Conecta · Clientes</span>
-      <span class="pill">Java 17</span>
-      <span class="pill"><a href="/swagger-ui/index.html">Swagger</a></span>
-      <span id="apiChip" class="pill">API: detectando…</span>
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <span class="badge">Re.Conecta · Clientes</span>
+        <span class="badge">Java 17</span>
+        <a class="badge" href="/swagger-ui/index.html" style="text-decoration:none;color:var(--muted)">Swagger</a>
+        <span id="apiPill" class="pill err">API: não encontrado</span>
+      </div>
+
+      <h1>Gerenciamento de Clientes</h1>
+
+      <div class="row">
+        <input id="nome" placeholder="Nome" autocomplete="off" />
+        <input id="email" placeholder="Email" autocomplete="off" />
+        <button id="btnCriar">Cadastrar</button>
+      </div>
+
+      <div id="msg" class="status muted"></div>
+
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Nome</th><th>Email</th></tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="3" class="muted">Carregando…</td></tr>
+        </tbody>
+      </table>
+      <small class="muted">Dica: endpoints — <code>/healthz</code> • <code>/api/v1/clientes</code></small>
     </div>
-
-    <h1>Gerenciamento de Clientes</h1>
-
-    <form id="clienteForm">
-      <input type="text" id="nome" placeholder="Nome" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <button type="submit">Cadastrar</button>
-    </form>
-
-    <div id="mensagem" class="msg"></div>
-
-    <table id="tabelaClientes">
-      <thead><tr><th>ID</th><th>Nome</th><th>Email</th></tr></thead>
-      <tbody></tbody>
-    </table>
   </div>
 
   <script>
-    // Candidatos mais comuns de endpoint
-    const CANDIDATES = ['/api/clientes', '/api/v1/clientes', '/clientes'];
-    let apiUrl = null;
+    // Mesma origem (Render serve API e estática juntos)
+    const API_BASE = ''; // vazio = mesma origem
+    const HEALTH = '/healthz';
+    const CLIENTES = '/api/v1/clientes';
 
-    const apiChip = document.getElementById('apiChip');
-    const form = document.getElementById('clienteForm');
-    const tabela = document.querySelector('#tabelaClientes tbody');
-    const msg = document.getElementById('mensagem');
+    const $pill = document.getElementById('apiPill');
+    const $msg  = document.getElementById('msg');
+    const $tbody= document.getElementById('tbody');
+    const $btn  = document.getElementById('btnCriar');
+    const $nome = document.getElementById('nome');
+    const $email= document.getElementById('email');
 
-    function setChipOk(url){ apiChip.textContent = 'API: ' + url; apiChip.classList.remove('err'); apiChip.classList.add('ok'); }
-    function setChipErr(text){ apiChip.textContent = 'API: ' + text; apiChip.classList.remove('ok'); apiChip.classList.add('err'); }
-
-    // Tenta descobrir qual endpoint existe (GET lista)
-    async function resolveApi() {
-      for (const path of CANDIDATES) {
-        try {
-          const res = await fetch(path, { method: 'GET', headers: { 'Accept': 'application/json' }});
-          if (res.ok) { apiUrl = path; setChipOk(path); return; }
-        } catch (_) {}
-      }
-      setChipErr('não encontrado');
+    function setPill(ok){
+      if(ok){ $pill.textContent='API: online'; $pill.className='pill ok'; }
+      else  { $pill.textContent='API: não encontrado'; $pill.className='pill err'; }
     }
+    function setMsg(text,ok){
+      if(!text){ $msg.textContent=''; return; }
+      $msg.className = 'status ' + (ok ? 'ok' : 'err');
+      $msg.textContent = text;
+    }
+    function rowHtml(c){ return `<tr><td>${c.id}</td><td>${c.nome}</td><td>${c.email}</td></tr>`; }
 
-    async function carregarClientes() {
-      if (!apiUrl) { tabela.innerHTML = '<tr><td colspan="3">API não detectada.</td></tr>'; return; }
-      try {
-        const res = await fetch(apiUrl, { headers: { 'Accept': 'application/json' }});
-        if (!res.ok) {
-          const txt = await res.text();
-          tabela.innerHTML = `<tr><td colspan="3">Erro ao carregar (status ${res.status}).</td></tr>`;
-          msg.innerHTML = `❌ <span class="err">Falha ao listar: status ${res.status}.</span> <small>${txt?.slice(0,200) || ''}</small>`;
-          return;
-        }
-        const data = await res.json();
-        tabela.innerHTML = '';
-        (Array.isArray(data) ? data : []).forEach(c => {
-          const row = `<tr><td>${c.id ?? ''}</td><td>${c.nome ?? ''}</td><td>${c.email ?? ''}</td></tr>`;
-          tabela.insertAdjacentHTML('beforeend', row);
-        });
-        if (!data || data.length === 0) {
-          tabela.innerHTML = '<tr><td colspan="3">Nenhum cliente ainda.</td></tr>';
-        }
-        msg.textContent = '';
-      } catch (e) {
-        tabela.innerHTML = '<tr><td colspan="3">Erro ao carregar clientes.</td></tr>';
-        msg.innerHTML = `❌ <span class="err">Exceção ao listar.</span>`;
+    async function ping(){
+      try{
+        const r = await fetch(API_BASE + HEALTH, {cache:'no-store'});
+        setPill(r.ok);
+        return r.ok;
+      }catch(e){
+        setPill(false); return false;
       }
     }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!apiUrl) { msg.innerHTML = '❌ <span class="err">API não detectada.</span>'; return; }
-
-      const payload = {
-        nome: document.getElementById('nome').value.trim(),
-        email: document.getElementById('email').value.trim()
-      };
-
-      try {
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const text = await res.text();
-        if (!res.ok) {
-          msg.innerHTML = `❌ <span class="err">Erro ao cadastrar (status ${res.status}).</span> <small>${text?.slice(0,200) || ''}</small>`;
-          return;
+    async function listar(){
+      try{
+        const r = await fetch(API_BASE + CLIENTES, {cache:'no-store'});
+        if(!r.ok){
+          const t = await r.text();
+          throw new Error(`Falha ao listar (${r.status}): ${t}`);
         }
-        msg.innerHTML = '✅ Cliente cadastrado com sucesso!';
-        form.reset();
-        await carregarClientes();
-      } catch (e) {
-        msg.innerHTML = '❌ <span class="err">Exceção ao cadastrar.</span>';
+        const data = await r.json();
+        if(!Array.isArray(data) || data.length===0){
+          $tbody.innerHTML = `<tr><td colspan="3" class="muted">Sem registros.</td></tr>`;
+        }else{
+          $tbody.innerHTML = data.map(rowHtml).join('');
+        }
+        setMsg('', true);
+      }catch(e){
+        $tbody.innerHTML = `<tr><td colspan="3" class="muted">Erro ao carregar clientes.</td></tr>`;
+        setMsg(e.message, false);
       }
-    });
+    }
 
-    (async () => {
-      await resolveApi();
-      await carregarClientes();
+    async function criar(){
+      const nome = ($nome.value||'').trim();
+      const email= ($email.value||'').trim();
+      if(!nome || !email){ setMsg('Preencha nome e email.', false); return; }
+      $btn.disabled = true;
+      try{
+        const r = await fetch(API_BASE + CLIENTES, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ nome, email })
+        });
+        if(!r.ok){
+          const t = await r.text();
+          throw new Error(`Falha ao cadastrar (${r.status}): ${t}`);
+        }
+        $nome.value=''; $email.value='';
+        setMsg('Cliente cadastrado com sucesso!', true);
+        await listar();
+      }catch(e){
+        setMsg(e.message, false);
+      }finally{
+        $btn.disabled = false;
+      }
+    }
+
+    document.getElementById('btnCriar').addEventListener('click', criar);
+
+    (async function start(){
+      const ok = await ping();
+      if(ok) await listar();
+      else{
+        setMsg('API não detectada. Verifique se o serviço está ativo.', false);
+        $tbody.innerHTML = `<tr><td colspan="3" class="muted">API não detectada.</td></tr>`;
+      }
+      // Re-ping a cada 20s para atualizar o selo
+      setInterval(ping, 20000);
     })();
   </script>
 </body>
