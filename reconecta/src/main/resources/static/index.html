@@ -13,7 +13,7 @@
     }
     *{box-sizing:border-box}
     body{
-      margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+      margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
       color:var(--text);
       background:
         radial-gradient(1100px 600px at -10% -20%, rgba(139,92,246,.18), transparent 40%),
@@ -22,20 +22,28 @@
       min-height:100vh; padding:28px;
     }
     .wrap{max-width:1080px;margin:0 auto}
-    .card{background:linear-gradient(180deg,var(--soft),rgba(255,255,255,.015)),var(--card);
-      border:1px solid var(--border);border-radius:18px;padding:24px 26px;box-shadow:var(--shadow)}
+    .card{
+      background:linear-gradient(180deg, var(--soft), rgba(255,255,255,.015)), var(--card);
+      border:1px solid var(--border); border-radius:18px; padding:24px 26px; box-shadow:var(--shadow);
+    }
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
     .chip{border:1px solid var(--border);padding:6px 10px;border-radius:999px;color:var(--muted);background:rgba(255,255,255,.02);font-size:13px}
     h1{margin:4px 0 12px;font-size:32px;letter-spacing:.3px}
+    h1 span{display:inline-flex;gap:10px;align-items:center}
+    .rocket{font-size:20px}
     .muted{color:var(--muted)}
     .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
     @media(max-width:900px){.cols{grid-template-columns:1fr}}
     .tile{border:1px solid var(--border);background:rgba(255,255,255,.02);padding:18px;border-radius:14px}
     .tile a{color:var(--text);text-decoration:none}
+    .tile h3{margin:0 0 8px;font-size:18px}
+    .foot{margin-top:18px;color:var(--muted);font-size:13px}
     .badge{font-weight:700;padding:4px 10px;border-radius:999px;margin-left:8px}
     .ok{background:rgba(52,211,153,.15); color:#34d399; border:1px solid rgba(52,211,153,.45)}
     .err{background:rgba(239,68,68,.15); color:#ef4444; border:1px solid rgba(239,68,68,.45)}
-    footer{margin-top:18px;color:var(--muted);font-size:12px}
+    .hint code{font-family:ui-monospace,Menlo,Consolas,monospace}
+    .hint{margin-top:14px}
+    footer{margin-top:14px;color:var(--muted);font-size:12px}
   </style>
 </head>
 <body>
@@ -47,33 +55,64 @@
         <span class="chip">Java 17</span>
       </div>
 
-      <h1>Seu backend está online 🚀<span id="apiStatus" class="badge ok">API ONLINE</span></h1>
-      <p class="muted">Bem-vindo! Esta é a página inicial da <strong>Re.Conecta API</strong>.</p>
+      <h1><span>Seu backend está online <span class="rocket">🚀</span><small id="apiStatus" class="badge err">API OFFLINE</small></span></h1>
+
+      <p class="muted">Bem-vindo! Esta é a página inicial da <strong>Re.Conecta API</strong>.
+        Use os atalhos abaixo para inspecionar, monitorar e testar os endpoints.</p>
 
       <div class="cols">
-        <div class="tile"><a href="/swagger-ui/index.html"><h3>Swagger UI</h3></a></div>
-        <div class="tile"><a href="#" id="healthLink"><h3>Healthcheck <span id="healthBadge" class="badge ok">ONLINE ✓</span></h3></a></div>
-        <div class="tile"><a href="/actuator"><h3>Actuator (opcional)</h3></a></div>
+        <div class="tile">
+          <a href="/swagger-ui/index.html"><h3>Swagger UI</h3></a>
+          <div class="muted">Explore e teste os endpoints diretamente no navegador.</div>
+        </div>
+
+        <div class="tile">
+          <a href="#" id="healthLink"><h3>Healthcheck <span id="healthBadge" class="badge err">OFFLINE ✗</span></h3></a>
+          <div class="muted">Verifica rapidamente se a API está respondendo.</div>
+        </div>
+
+        <div class="tile">
+          <a href="/actuator"><h3>Actuator (opcional)</h3></a>
+          <div class="muted">Métricas e infos (se o Actuator estiver habilitado).</div>
+        </div>
       </div>
 
       <div class="cols" style="margin-top:14px">
-        <div class="tile"><a href="/clientes.html"><h3>Clientes</h3></a></div>
-        <div class="tile"><a href="/doadores.html"><h3>Doadores</h3></a></div>
-        <div class="tile"><a href="/beneficiarios.html"><h3>Beneficiários</h3></a></div>
-        <div class="tile"><a href="/doacoes.html"><h3>Doações</h3></a></div>
+        <div class="tile">
+          <a href="/clientes.html"><h3>Clientes</h3></a>
+          <div class="muted">CRUD simples de clientes.</div>
+        </div>
+
+        <div class="tile">
+          <a href="/doadores.html"><h3>Doadores</h3></a>
+          <div class="muted">Cadastro e listagem de doadores.</div>
+        </div>
+
+        <div class="tile">
+          <a href="/beneficiarios.html"><h3>Beneficiários</h3></a>
+          <div class="muted">Cadastro de beneficiários (pessoas/instituições).</div>
+        </div>
+
+        <div class="tile">
+          <a href="/doacoes.html"><h3>Doações</h3></a>
+          <div class="muted">Registrar doações (doador ➜ beneficiário).</div>
+        </div>
       </div>
 
+      <div class="hint muted">Dica: endpoints comuns — <code>/api/v1/…</code> • <code>/auth/login</code> • <code>/clientes</code></div>
       <footer>© Re.Conecta — página estática servida pelo Spring.</footer>
     </div>
   </div>
 
   <script>
-    const healthUrl = '/healthz';
+    // Usando o Actuator como fonte de verdade do health:
+    const healthUrl = '/actuator/health';
+
     const apiStatus = document.getElementById('apiStatus');
     const healthBadge = document.getElementById('healthBadge');
     const healthLink = document.getElementById('healthLink');
-
     healthLink.href = healthUrl;
+
     async function ping() {
       try {
         const res = await fetch(healthUrl, { cache: 'no-store' });
@@ -82,7 +121,9 @@
           apiStatus.className = 'badge ok';
           healthBadge.textContent = 'ONLINE ✓';
           healthBadge.className = 'badge ok';
-        } else throw new Error('Offline');
+        } else {
+          throw new Error('bad status');
+        }
       } catch {
         apiStatus.textContent = 'API OFFLINE';
         apiStatus.className = 'badge err';
