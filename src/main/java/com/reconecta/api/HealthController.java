@@ -1,28 +1,14 @@
-package com.reconecta.api;
+package com.reconecta.api.health;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
+import java.util.Map;
 
 @RestController
 public class HealthController {
 
-    private final DataSource dataSource;
-
-    public HealthController(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    @GetMapping("/healthz")
-    public HealthResponse healthz() {
-      try (Connection ignored = dataSource.getConnection()) {
-        return new HealthResponse("UP");
-      } catch (Exception e) {
-        return new HealthResponse("DOWN");
-      }
-    }
-
-    static record HealthResponse(String status) {}
+  @GetMapping("/healthz")
+  public Map<String, Object> healthz() {
+    return Map.of("status", "ok");
+  }
 }
