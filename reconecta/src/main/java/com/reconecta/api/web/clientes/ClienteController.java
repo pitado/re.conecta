@@ -1,9 +1,8 @@
-package com.reconecta.api.web.client es;
+package com.reconecta.api.web.clientes;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -11,37 +10,20 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ClienteController {
 
-    private final ClienteRepository repo;
+    private final ClienteRepository repository;
 
-    public ClienteController(ClienteRepository repo) {
-        this.repo = repo;
+    public ClienteController(ClienteRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping
     public List<Cliente> listar() {
-        return repo.findAll();
+        return repository.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> criar(@RequestBody Cliente dto) {
-        if (dto.getNome() == null || dto.getNome().isBlank()
-                || dto.getEmail() == null || dto.getEmail().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        // evita duplicado por email
-        repo.findByEmail(dto.getEmail()).ifPresent(c -> {
-            throw new RuntimeException("Email já cadastrado");
-        });
-
-        Cliente salvo = repo.save(new Cliente(dto.getNome(), dto.getEmail()));
-        return ResponseEntity.created(URI.create("/api/v1/clientes/" + salvo.getId()))
-                .body(salvo);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable Long id) {
-        if (!repo.existsById(id)) return ResponseEntity.notFound().build();
-        repo.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Cliente> criar(@RequestBody Cliente cliente) {
+        Cliente salvo = repository.save(cliente);
+        return ResponseEntity.ok(salvo);
     }
 }
