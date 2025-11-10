@@ -2,24 +2,33 @@ package com.reconecta.api.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-public class HomeController {
+public class RootController {
 
-    // Redireciona a raiz "/" para a documentação Swagger
-    @GetMapping("/")
+    // envia /, /index e /home para a página estática
+    @GetMapping({"/", "/index", "/home"})
     public String home() {
-        return "redirect:/swagger-ui/index.html";
+        return "forward:/index.html";
     }
-}
 
-// Endpoint simples de health (pode remover se já tiver o HealthController)
-@RestController
-class HealthController {
+    @GetMapping("/clientes")
+    public String clientes() {
+        return "forward:/clientes.html";
+    }
 
-    @GetMapping("/healthz")
-    public String health() {
-        return "{\"status\":\"ok\"}";
+    @GetMapping("/doadores")
+    public String doadores() {
+        return "forward:/doadores.html";
+    }
+
+    @GetMapping("/beneficiarios")
+    public String beneficiarios() {
+        return "forward:/beneficiarios.html";
+    }
+
+    @GetMapping("/doacoes")
+    public String doacoes() {
+        return "forward:/doacoes.html";
     }
 }
